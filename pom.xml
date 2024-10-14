@@ -38,6 +38,16 @@
         </dependencies>
     </dependencyManagement>
 
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>io.spring.javaformat</groupId>
+                <artifactId>spring-javaformat-maven-plugin</artifactId>
+                <version>0.0.43</version>
+            </plugin>
+        </plugins>
+    </build>
+
     <repositories>
         <repository>
             <id>spring</id>
