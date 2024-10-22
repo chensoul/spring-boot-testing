@@ -12,13 +12,14 @@ import org.springframework.context.annotation.Configuration;
 @ConditionalOnProperty(value = "todo.profiles[0].name", matchIfMissing = false)
 class TodoPropertiesConfiguration {
 
-    Logger logger = LoggerFactory.getLogger(getClass());
+	Logger logger = LoggerFactory.getLogger(getClass());
 
-    @Autowired
-    public void configure(TodoProperties props) {
-        logger.info("📝 found {} profile(s)", props.getProfiles().size());
-        if (props.getProfiles().stream().map(TodoProperties.UserProfile::name).anyMatch("devoxx"::equals)) {
-            throw new RuntimeException("BOOM");
-        }
-    }
+	@Autowired
+	public void configure(TodoProperties props) {
+		logger.info("📝 found {} profile(s)", props.getProfiles().size());
+		if (props.getProfiles().stream().map(TodoProperties.UserProfile::name).anyMatch("devoxx"::equals)) {
+			throw new RuntimeException("BOOM");
+		}
+	}
+
 }

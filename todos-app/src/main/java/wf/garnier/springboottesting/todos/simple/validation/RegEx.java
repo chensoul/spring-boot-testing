@@ -12,12 +12,13 @@ import java.lang.annotation.Target;
  */
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
-@Constraint(validatedBy = {RegExConstraintValidator.class})
+@Constraint(validatedBy = { RegExConstraintValidator.class })
 public @interface RegEx {
 
-    String message() default "Provided string is not a valid regular expression.";
+	String message() default "Provided string is not a valid regular expression.";
 
-    Class<?>[] groups() default {};
+	Class<?>[] groups() default {};
 
-    Class<? extends Payload>[] payload() default {};
+	Class<? extends Payload>[] payload() default {};
+
 }

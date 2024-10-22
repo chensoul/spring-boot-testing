@@ -11,24 +11,26 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 class TodoConfiguration {
 
-    Logger logger = LoggerFactory.getLogger(TodoConfiguration.class);
+	Logger logger = LoggerFactory.getLogger(TodoConfiguration.class);
 
-    public record SlowStartingBean() {}
+	public record SlowStartingBean() {
+	}
 
-    // @Bean
-    public SlowStartingBean slowStartingBean() throws InterruptedException {
-        logger.info("🐌 ... configuring ...");
-        Thread.sleep(Duration.ofSeconds(1));
-        logger.info("🐌 ... slow ...");
-        Thread.sleep(Duration.ofSeconds(1));
-        logger.info("🐌 ... bean ...");
-        Thread.sleep(Duration.ofSeconds(1));
-        logger.info("🐌🏆 ... slow ... bean ... successfully... configured ...");
-        return new SlowStartingBean();
-    }
+	// @Bean
+	public SlowStartingBean slowStartingBean() throws InterruptedException {
+		logger.info("🐌 ... configuring ...");
+		Thread.sleep(Duration.ofSeconds(1));
+		logger.info("🐌 ... slow ...");
+		Thread.sleep(Duration.ofSeconds(1));
+		logger.info("🐌 ... bean ...");
+		Thread.sleep(Duration.ofSeconds(1));
+		logger.info("🐌🏆 ... slow ... bean ... successfully... configured ...");
+		return new SlowStartingBean();
+	}
 
-    @Bean
-    public WebServerFactoryCustomizer<TomcatServletWebServerFactory> connectorCustomizer() {
-        return (tomcat) -> tomcat.addContextValves(new TomcatLoggingValve());
-    }
+	@Bean
+	public WebServerFactoryCustomizer<TomcatServletWebServerFactory> connectorCustomizer() {
+		return (tomcat) -> tomcat.addContextValves(new TomcatLoggingValve());
+	}
+
 }

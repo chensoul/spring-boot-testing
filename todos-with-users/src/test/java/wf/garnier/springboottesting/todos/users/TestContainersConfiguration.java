@@ -12,23 +12,24 @@ import wf.garnier.testcontainers.dexidp.DexContainer;
 @Testcontainers
 class TestContainersConfiguration {
 
-    @Container
-    public static PostgreSQLContainer<?> postgresContainer = new PostgreSQLContainer<>("postgres:17.0");
+	@Container
+	public static PostgreSQLContainer<?> postgresContainer = new PostgreSQLContainer<>("postgres:17.0");
 
-    @Container
-    @ServiceConnection
-    public static DexContainer dexContainer =
-            new DexContainer(DexContainer.DEFAULT_IMAGE_NAME.withTag(DexContainer.DEFAULT_TAG));
+	@Container
+	@ServiceConnection
+	public static DexContainer dexContainer = new DexContainer(
+			DexContainer.DEFAULT_IMAGE_NAME.withTag(DexContainer.DEFAULT_TAG));
 
-    @Bean
-    @ServiceConnection
-    public PostgreSQLContainer<?> postgresContainer() {
-        return postgresContainer;
-    }
+	@Bean
+	@ServiceConnection
+	public PostgreSQLContainer<?> postgresContainer() {
+		return postgresContainer;
+	}
 
-    @Bean
-    @ServiceConnection
-    public DexContainer dexContainer() {
-        return dexContainer;
-    }
+	@Bean
+	@ServiceConnection
+	public DexContainer dexContainer() {
+		return dexContainer;
+	}
+
 }

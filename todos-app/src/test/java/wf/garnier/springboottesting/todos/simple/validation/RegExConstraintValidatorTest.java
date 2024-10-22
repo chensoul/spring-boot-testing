@@ -10,26 +10,27 @@ import org.junit.jupiter.params.provider.ValueSource;
 
 class RegExConstraintValidatorTest {
 
-    private final Validator validator =
-            Validation.buildDefaultValidatorFactory().getValidator();
+	private final Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
 
-    @ParameterizedTest
-    @ValueSource(strings = {".*", "^adm", "per$"})
-    void validRegEx(String regex) {
-        assertThat(validator.validate(new Entity(regex))).isValid();
-    }
+	@ParameterizedTest
+	@ValueSource(strings = { ".*", "^adm", "per$" })
+	void validRegEx(String regex) {
+		assertThat(validator.validate(new Entity(regex))).isValid();
+	}
 
-    @ParameterizedTest
-    @ValueSource(strings = {"[...../", "x[\\x"})
-    void invalidRegEx(String regex) {
-        assertThat(validator.validate(new Entity(regex)))
-                .hasViolationWithMessage("Provided string is not a valid regular expression.");
-    }
+	@ParameterizedTest
+	@ValueSource(strings = { "[...../", "x[\\x" })
+	void invalidRegEx(String regex) {
+		assertThat(validator.validate(new Entity(regex)))
+			.hasViolationWithMessage("Provided string is not a valid regular expression.");
+	}
 
-    @Test
-    void nullRegex() {
-        assertThat(validator.validate(new Entity(null))).isValid();
-    }
+	@Test
+	void nullRegex() {
+		assertThat(validator.validate(new Entity(null))).isValid();
+	}
 
-    record Entity(@RegEx String filter) {}
+	record Entity(@RegEx String filter) {
+	}
+
 }

@@ -13,29 +13,31 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 @WebMvcTest
 class TodoControllerTests {
 
-    @Autowired
-    MockMvc mockMvc;
+	@Autowired
+	MockMvc mockMvc;
 
-    @MockitoBean
-    TodoService todoService;
+	@MockitoBean
+	TodoService todoService;
 
-    @Test
-    void deleteTodo() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.post("/todo/25/delete"))
-                .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/"));
+	@Test
+	void deleteTodo() throws Exception {
+		mockMvc.perform(MockMvcRequestBuilders.post("/todo/25/delete"))
+			.andExpect(status().is3xxRedirection())
+			.andExpect(redirectedUrl("/"));
 
-        verify(todoService).delete(25);
-    }
+		verify(todoService).delete(25);
+	}
 
-    @Test
-    void addTodo() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.post("/todo")
-                        .param("text", "Test todo")
-                        .param("description", "This is a test todo, and it's fun!"))
-                .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/"));
+	@Test
+	void addTodo() throws Exception {
+		mockMvc
+			.perform(MockMvcRequestBuilders.post("/todo")
+				.param("text", "Test todo")
+				.param("description", "This is a test todo, and it's fun!"))
+			.andExpect(status().is3xxRedirection())
+			.andExpect(redirectedUrl("/"));
 
-        verify(todoService).addTodo("Test todo", "This is a test todo, and it's fun!");
-    }
+		verify(todoService).addTodo("Test todo", "This is a test todo, and it's fun!");
+	}
+
 }

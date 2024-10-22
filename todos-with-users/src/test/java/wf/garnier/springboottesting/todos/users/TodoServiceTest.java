@@ -14,74 +14,68 @@ import org.springframework.context.annotation.Import;
 @Import(TestContainersConfiguration.class)
 class TodoServiceTest {
 
-    @Autowired
-    TodoRepository todoRepository;
+	@Autowired
+	TodoRepository todoRepository;
 
-    private TodoService todoService;
+	private TodoService todoService;
 
-    @BeforeEach
-    void beforeEach() {
-        todoService = new TodoService(todoRepository);
-        todoRepository.deleteAll();
-    }
+	@BeforeEach
+	void beforeEach() {
+		todoService = new TodoService(todoRepository);
+		todoRepository.deleteAll();
+	}
 
-    @Test
-    void empty() {
-        var todos = todoService.getTodos("alice");
+	@Test
+	void empty() {
+		var todos = todoService.getTodos("alice");
 
-        assertThat(todos).hasSize(0);
-    }
+		assertThat(todos).hasSize(0);
+	}
 
-    @Test
-    void add() {
-        var username = "alice";
-        todoService.addTodo("first thing to do", username);
-        todoService.addTodo("second thing to do", username);
-        todoService.addTodo("third thing to do", username);
+	@Test
+	void add() {
+		var username = "alice";
+		todoService.addTodo("first thing to do", username);
+		todoService.addTodo("second thing to do", username);
+		todoService.addTodo("third thing to do", username);
 
-        var todos = todoService.getTodos(username);
+		var todos = todoService.getTodos(username);
 
-        assertThat(todos)
-                .hasSize(3)
-                .map(TodoItem::text)
-                .containsExactly("first thing to do", "second thing to do", "third thing to do");
-    }
+		assertThat(todos).hasSize(3)
+			.map(TodoItem::text)
+			.containsExactly("first thing to do", "second thing to do", "third thing to do");
+	}
 
-    @Test
-    void multipleUsers() {
-        var firstUsername = "alice";
-        var secondUsername = "bob";
-        todoService.addTodo("first", firstUsername);
-        todoService.addTodo("second", secondUsername);
+	@Test
+	void multipleUsers() {
+		var firstUsername = "alice";
+		var secondUsername = "bob";
+		todoService.addTodo("first", firstUsername);
+		todoService.addTodo("second", secondUsername);
 
-        assertThat(todoService.getTodos(firstUsername))
-                .hasSize(1)
-                .map(TodoItem::text)
-                .containsExactly("first");
-        assertThat(todoService.getTodos(secondUsername))
-                .hasSize(1)
-                .map(TodoItem::text)
-                .containsExactly("second");
-        assertThat(todoService.getTodos("carol")).isEmpty();
-    }
+		assertThat(todoService.getTodos(firstUsername)).hasSize(1).map(TodoItem::text).containsExactly("first");
+		assertThat(todoService.getTodos(secondUsername)).hasSize(1).map(TodoItem::text).containsExactly("second");
+		assertThat(todoService.getTodos("carol")).isEmpty();
+	}
 
-    @Test
-    void delete() {
-        var username = "alice";
-        var todo = todoService.addTodo("something", username);
+	@Test
+	void delete() {
+		var username = "alice";
+		var todo = todoService.addTodo("something", username);
 
-        todoService.delete(todo.id(), username);
+		todoService.delete(todo.id(), username);
 
-        assertThat(todoService.getTodos(username)).isEmpty();
-    }
+		assertThat(todoService.getTodos(username)).isEmpty();
+	}
 
-    @Test
-    void deleteSomeoneElsesTodo() {
-        var username = "alice";
-        var todo = todoService.addTodo("something", username);
+	@Test
+	void deleteSomeoneElsesTodo() {
+		var username = "alice";
+		var todo = todoService.addTodo("something", username);
 
-        todoService.delete(todo.id(), "bob");
+		todoService.delete(todo.id(), "bob");
 
-        assertThat(todoService.getTodos(username)).hasSize(1).containsExactly(todo);
-    }
+		assertThat(todoService.getTodos(username)).hasSize(1).containsExactly(todo);
+	}
+
 }

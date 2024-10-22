@@ -14,271 +14,281 @@ import org.junit.jupiter.api.Test;
 
 class UniqueByPropertyConstraintValidatorTests {
 
-    private final Validator validator =
-            Validation.buildDefaultValidatorFactory().getValidator();
+	private final Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
 
-    @Nested
-    class ValidateByProperty {
+	@Nested
+	class ValidateByProperty {
 
-        @Test
-        void valid() {
-            Container container = new Container(new Entity("one"), new Entity("two"));
+		@Test
+		void valid() {
+			Container container = new Container(new Entity("one"), new Entity("two"));
 
-            assertThat(validator.validate(container)).hasSize(0);
-        }
+			assertThat(validator.validate(container)).hasSize(0);
+		}
 
-        @Test
-        void nullCollection() {
-            Container container = new Container();
-            container.setEntityList(null);
+		@Test
+		void nullCollection() {
+			Container container = new Container();
+			container.setEntityList(null);
 
-            assertThat(validator.validate(container)).hasSize(0);
-        }
+			assertThat(validator.validate(container)).hasSize(0);
+		}
 
-        @Test
-        void emptyCollection() {
-            Container container = new Container();
+		@Test
+		void emptyCollection() {
+			Container container = new Container();
 
-            assertThat(validator.validate(container)).hasSize(0);
-        }
+			assertThat(validator.validate(container)).hasSize(0);
+		}
 
-        @Test
-        void duplicates() {
-            Container container = new Container(new Entity("one"), new Entity("two"), new Entity("one"));
+		@Test
+		void duplicates() {
+			Container container = new Container(new Entity("one"), new Entity("two"), new Entity("one"));
 
-            assertThat(validator.validate(container))
-                    .hasSize(1)
-                    .hasViolationForProperty(
-                            "entityList",
-                            "List items should have distinct \"publicName\" properties. Found duplicates: [one].");
-        }
+			assertThat(validator.validate(container)).hasSize(1)
+				.hasViolationForProperty("entityList",
+						"List items should have distinct \"publicName\" properties. Found duplicates: [one].");
+		}
 
-        @Test
-        void missingProperty() {
-            class MissingProperty {
+		@Test
+		void missingProperty() {
+			class MissingProperty {
 
-                @UniqueByProperty(property = "foo")
-                public final List<Entity> entityList = Collections.singletonList(new Entity("one"));
-            }
-            MissingProperty container = new MissingProperty();
+				@UniqueByProperty(property = "foo")
+				public final List<Entity> entityList = Collections.singletonList(new Entity("one"));
 
-            Assertions.assertThatExceptionOfType(ValidationException.class)
-                    .isThrownBy(() -> validator.validate(container))
-                    .havingRootCause()
-                    .isInstanceOf(IllegalArgumentException.class)
-                    .withMessage("Could not find property \"foo\" on type " + Entity.class.getName());
-        }
+			}
+			MissingProperty container = new MissingProperty();
 
-        @Test
-        void privateProperty() {
-            class PrivatePropertyContainer {
+			Assertions.assertThatExceptionOfType(ValidationException.class)
+				.isThrownBy(() -> validator.validate(container))
+				.havingRootCause()
+				.isInstanceOf(IllegalArgumentException.class)
+				.withMessage("Could not find property \"foo\" on type " + Entity.class.getName());
+		}
 
-                @UniqueByProperty(property = "privateName")
-                public final List<Entity> entityList = Collections.singletonList(new Entity("one"));
-            }
-            PrivatePropertyContainer container = new PrivatePropertyContainer();
+		@Test
+		void privateProperty() {
+			class PrivatePropertyContainer {
 
-            Assertions.assertThatExceptionOfType(ValidationException.class)
-                    .isThrownBy(() -> validator.validate(container))
-                    .havingRootCause()
-                    .isInstanceOf(IllegalArgumentException.class)
-                    .withMessage("Could not access property \"privateName\" on type " + Entity.class.getName()
-                            + ". Make sure the property is public.");
-        }
+				@UniqueByProperty(property = "privateName")
+				public final List<Entity> entityList = Collections.singletonList(new Entity("one"));
 
-        class Container {
+			}
+			PrivatePropertyContainer container = new PrivatePropertyContainer();
 
-            @UniqueByProperty(property = "publicName")
-            List<Entity> entityList;
+			Assertions.assertThatExceptionOfType(ValidationException.class)
+				.isThrownBy(() -> validator.validate(container))
+				.havingRootCause()
+				.isInstanceOf(IllegalArgumentException.class)
+				.withMessage("Could not access property \"privateName\" on type " + Entity.class.getName()
+						+ ". Make sure the property is public.");
+		}
 
-            Container(Entity... entities) {
-                this.entityList = Arrays.asList(entities);
-            }
+		class Container {
 
-            public void setEntityList(List<Entity> entityList) {
-                this.entityList = entityList;
-            }
-        }
-    }
+			@UniqueByProperty(property = "publicName")
+			List<Entity> entityList;
 
-    @Nested
-    class ValidateByMethod {
+			Container(Entity... entities) {
+				this.entityList = Arrays.asList(entities);
+			}
 
-        @Test
-        void valid() {
-            Container container = new Container(new Entity("one"), new Entity("two"));
+			public void setEntityList(List<Entity> entityList) {
+				this.entityList = entityList;
+			}
 
-            assertThat(validator.validate(container)).hasSize(0);
-        }
+		}
 
-        @Test
-        void nullCollection() {
-            Container container = new Container();
-            container.setEntityList(null);
+	}
 
-            assertThat(validator.validate(container)).hasSize(0);
-        }
+	@Nested
+	class ValidateByMethod {
 
-        @Test
-        void emptyCollection() {
-            Container container = new Container();
+		@Test
+		void valid() {
+			Container container = new Container(new Entity("one"), new Entity("two"));
 
-            assertThat(validator.validate(container)).hasSize(0);
-        }
+			assertThat(validator.validate(container)).hasSize(0);
+		}
 
-        @Test
-        void duplicates() {
-            Container container = new Container(new Entity("one"), new Entity("two"), new Entity("one"));
+		@Test
+		void nullCollection() {
+			Container container = new Container();
+			container.setEntityList(null);
 
-            assertThat(validator.validate(container))
-                    .hasSize(1)
-                    .hasViolationForProperty(
-                            "entityList",
-                            "List items should have distinct \"some-property\" properties. Found duplicates: [one].");
-        }
+			assertThat(validator.validate(container)).hasSize(0);
+		}
 
-        @Test
-        void missingProperty() {
-            class MissingGetterContainer {
+		@Test
+		void emptyCollection() {
+			Container container = new Container();
 
-                @UniqueByProperty(property = "some-property", getterMethod = "foo")
-                public final List<Entity> entityList = Collections.singletonList(new Entity("one"));
-            }
-            MissingGetterContainer container = new MissingGetterContainer();
+			assertThat(validator.validate(container)).hasSize(0);
+		}
 
-            Assertions.assertThatExceptionOfType(ValidationException.class)
-                    .isThrownBy(() -> validator.validate(container))
-                    .havingRootCause()
-                    .isInstanceOf(IllegalArgumentException.class)
-                    .withMessage("Could not find getter method \"foo\" on type " + Entity.class.getName()
-                            + ". The method should not accept any argument.");
-        }
+		@Test
+		void duplicates() {
+			Container container = new Container(new Entity("one"), new Entity("two"), new Entity("one"));
 
-        @Test
-        void privateProperty() {
-            class PrivateGetterContainer {
+			assertThat(validator.validate(container)).hasSize(1)
+				.hasViolationForProperty("entityList",
+						"List items should have distinct \"some-property\" properties. Found duplicates: [one].");
+		}
 
-                @UniqueByProperty(property = "some-property", getterMethod = "privateGetter")
-                public final List<Entity> entityList = Collections.singletonList(new Entity("one"));
-            }
-            PrivateGetterContainer container = new PrivateGetterContainer();
+		@Test
+		void missingProperty() {
+			class MissingGetterContainer {
 
-            Assertions.assertThatExceptionOfType(ValidationException.class)
-                    .isThrownBy(() -> validator.validate(container))
-                    .havingRootCause()
-                    .isInstanceOf(IllegalArgumentException.class)
-                    .withMessage("Could not access getter method \"privateGetter\" on type " + Entity.class.getName()
-                            + ". Make sure the method is public.");
-        }
+				@UniqueByProperty(property = "some-property", getterMethod = "foo")
+				public final List<Entity> entityList = Collections.singletonList(new Entity("one"));
 
-        @Test
-        void wrongSignatureGetter() {
-            class WrongSignatureContainer {
+			}
+			MissingGetterContainer container = new MissingGetterContainer();
 
-                @UniqueByProperty(property = "some-property", getterMethod = "wrongSignature")
-                public final List<Entity> entityList = Collections.singletonList(new Entity("one"));
-            }
-            WrongSignatureContainer container = new WrongSignatureContainer();
+			Assertions.assertThatExceptionOfType(ValidationException.class)
+				.isThrownBy(() -> validator.validate(container))
+				.havingRootCause()
+				.isInstanceOf(IllegalArgumentException.class)
+				.withMessage("Could not find getter method \"foo\" on type " + Entity.class.getName()
+						+ ". The method should not accept any argument.");
+		}
 
-            Assertions.assertThatExceptionOfType(ValidationException.class)
-                    .isThrownBy(() -> validator.validate(container))
-                    .havingRootCause()
-                    .isInstanceOf(IllegalArgumentException.class)
-                    .withMessage("Could not find getter method \"wrongSignature\" on type " + Entity.class.getName()
-                            + ". The method should not accept any argument.");
-        }
+		@Test
+		void privateProperty() {
+			class PrivateGetterContainer {
 
-        @Test
-        void getterThrows() {
-            class ThrowingGetterContainer {
+				@UniqueByProperty(property = "some-property", getterMethod = "privateGetter")
+				public final List<Entity> entityList = Collections.singletonList(new Entity("one"));
 
-                @UniqueByProperty(property = "some-property", getterMethod = "throwingGetter")
-                public final List<Entity> entityList = Collections.singletonList(new Entity("one"));
-            }
-            ThrowingGetterContainer container = new ThrowingGetterContainer();
+			}
+			PrivateGetterContainer container = new PrivateGetterContainer();
 
-            Assertions.assertThatExceptionOfType(ValidationException.class)
-                    .isThrownBy(() -> validator.validate(container))
-                    .havingCause()
-                    .withMessageContaining("Getter method \"throwingGetter\" on type " + Entity.class.getName()
-                            + " threw exception: " + RuntimeException.class.getName())
-                    .havingRootCause()
-                    .isInstanceOf(RuntimeException.class)
-                    .withMessage("throw from the getter");
-        }
+			Assertions.assertThatExceptionOfType(ValidationException.class)
+				.isThrownBy(() -> validator.validate(container))
+				.havingRootCause()
+				.isInstanceOf(IllegalArgumentException.class)
+				.withMessage("Could not access getter method \"privateGetter\" on type " + Entity.class.getName()
+						+ ". Make sure the method is public.");
+		}
 
-        class Container {
+		@Test
+		void wrongSignatureGetter() {
+			class WrongSignatureContainer {
 
-            @UniqueByProperty(property = "some-property", getterMethod = "getPrivateName")
-            List<Entity> entityList;
+				@UniqueByProperty(property = "some-property", getterMethod = "wrongSignature")
+				public final List<Entity> entityList = Collections.singletonList(new Entity("one"));
 
-            Container(Entity... entities) {
-                this.entityList = Arrays.asList(entities);
-            }
+			}
+			WrongSignatureContainer container = new WrongSignatureContainer();
 
-            public void setEntityList(List<Entity> entityList) {
-                this.entityList = entityList;
-            }
-        }
-    }
+			Assertions.assertThatExceptionOfType(ValidationException.class)
+				.isThrownBy(() -> validator.validate(container))
+				.havingRootCause()
+				.isInstanceOf(IllegalArgumentException.class)
+				.withMessage("Could not find getter method \"wrongSignature\" on type " + Entity.class.getName()
+						+ ". The method should not accept any argument.");
+		}
 
-    @Nested
-    class NullElements {
+		@Test
+		void getterThrows() {
+			class ThrowingGetterContainer {
 
-        @Test
-        void disallowNulls() {
-            class NullValidatorContainer {
+				@UniqueByProperty(property = "some-property", getterMethod = "throwingGetter")
+				public final List<Entity> entityList = Collections.singletonList(new Entity("one"));
 
-                @UniqueByProperty(property = "publicName")
-                public final List<Entity> entityList = Arrays.asList(new Entity("one"), null);
-            }
+			}
+			ThrowingGetterContainer container = new ThrowingGetterContainer();
 
-            NullValidatorContainer container = new NullValidatorContainer();
-            Assertions.assertThatExceptionOfType(ValidationException.class)
-                    .isThrownBy(() -> validator.validate(container))
-                    .havingRootCause()
-                    .isInstanceOf(IllegalArgumentException.class)
-                    .withMessage(
-                            "Error checking that collection has distinct \"publicName\" properties: collection contained null.");
-        }
+			Assertions.assertThatExceptionOfType(ValidationException.class)
+				.isThrownBy(() -> validator.validate(container))
+				.havingCause()
+				.withMessageContaining("Getter method \"throwingGetter\" on type " + Entity.class.getName()
+						+ " threw exception: " + RuntimeException.class.getName())
+				.havingRootCause()
+				.isInstanceOf(RuntimeException.class)
+				.withMessage("throw from the getter");
+		}
 
-        @Test
-        void allowNulls() {
-            class NullValidatorContainer {
+		class Container {
 
-                @UniqueByProperty(property = "publicName", allowNullValues = true)
-                public final List<Entity> entityList = Arrays.asList(new Entity("one"), null, new Entity("two"));
-            }
+			@UniqueByProperty(property = "some-property", getterMethod = "getPrivateName")
+			List<Entity> entityList;
 
-            assertThat(validator.validate(new NullValidatorContainer())).isEmpty();
-        }
-    }
+			Container(Entity... entities) {
+				this.entityList = Arrays.asList(entities);
+			}
 
-    static class Entity {
+			public void setEntityList(List<Entity> entityList) {
+				this.entityList = entityList;
+			}
 
-        public final String publicName;
+		}
 
-        private final String privateName;
+	}
 
-        Entity(String name) {
-            this.privateName = name;
-            this.publicName = name;
-        }
+	@Nested
+	class NullElements {
 
-        public String getPrivateName() {
-            return privateName;
-        }
+		@Test
+		void disallowNulls() {
+			class NullValidatorContainer {
 
-        private String privateGetter() {
-            return privateName;
-        }
+				@UniqueByProperty(property = "publicName")
+				public final List<Entity> entityList = Arrays.asList(new Entity("one"), null);
 
-        public String wrongSignature(String someInput) {
-            return privateName;
-        }
+			}
 
-        public String throwingGetter() {
-            throw new RuntimeException("throw from the getter");
-        }
-    }
+			NullValidatorContainer container = new NullValidatorContainer();
+			Assertions.assertThatExceptionOfType(ValidationException.class)
+				.isThrownBy(() -> validator.validate(container))
+				.havingRootCause()
+				.isInstanceOf(IllegalArgumentException.class)
+				.withMessage(
+						"Error checking that collection has distinct \"publicName\" properties: collection contained null.");
+		}
+
+		@Test
+		void allowNulls() {
+			class NullValidatorContainer {
+
+				@UniqueByProperty(property = "publicName", allowNullValues = true)
+				public final List<Entity> entityList = Arrays.asList(new Entity("one"), null, new Entity("two"));
+
+			}
+
+			assertThat(validator.validate(new NullValidatorContainer())).isEmpty();
+		}
+
+	}
+
+	static class Entity {
+
+		public final String publicName;
+
+		private final String privateName;
+
+		Entity(String name) {
+			this.privateName = name;
+			this.publicName = name;
+		}
+
+		public String getPrivateName() {
+			return privateName;
+		}
+
+		private String privateGetter() {
+			return privateName;
+		}
+
+		public String wrongSignature(String someInput) {
+			return privateName;
+		}
+
+		public String throwingGetter() {
+			throw new RuntimeException("throw from the getter");
+		}
+
+	}
+
 }

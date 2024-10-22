@@ -10,21 +10,21 @@ import org.springframework.util.ReflectionUtils;
 
 public class OneOfExactlyConstraintValidator implements ConstraintValidator<OneOf.Exactly, Object> {
 
-    private String constraintMessage;
+	private String constraintMessage;
 
-    @Override
-    public void initialize(OneOf.Exactly constraintAnnotation) {
-        constraintMessage = constraintAnnotation.message();
-    }
+	@Override
+	public void initialize(OneOf.Exactly constraintAnnotation) {
+		constraintMessage = constraintAnnotation.message();
+	}
 
-    @Override
-    public boolean isValid(final Object object, ConstraintValidatorContext context) {
-        if (object == null) {
-            // Unsure whether you can validate a `null` object...
-            return true;
-        }
+	@Override
+	public boolean isValid(final Object object, ConstraintValidatorContext context) {
+		if (object == null) {
+			// Unsure whether you can validate a `null` object...
+			return true;
+		}
 
-        // @formatter:off
+		// @formatter:off
         List<OneOfField> annotatedFields = Stream.of(object.getClass().getDeclaredFields())
                 .filter(f -> f.isAnnotationPresent(OneOf.class))
                 .peek(f -> f.setAccessible(true))
@@ -68,26 +68,28 @@ public class OneOfExactlyConstraintValidator implements ConstraintValidator<OneO
                 .addPropertyNode(reportedFailingProperty)
                 .addConstraintViolation();
         // @formatter:on
-        return false;
-    }
+		return false;
+	}
 
-    static class OneOfField {
+	static class OneOfField {
 
-        private final String name;
+		private final String name;
 
-        private final boolean hasValue;
+		private final boolean hasValue;
 
-        OneOfField(String name, boolean hasValue) {
-            this.name = name;
-            this.hasValue = hasValue;
-        }
+		OneOfField(String name, boolean hasValue) {
+			this.name = name;
+			this.hasValue = hasValue;
+		}
 
-        public String getName() {
-            return name;
-        }
+		public String getName() {
+			return name;
+		}
 
-        public boolean hasValue() {
-            return hasValue;
-        }
-    }
+		public boolean hasValue() {
+			return hasValue;
+		}
+
+	}
+
 }

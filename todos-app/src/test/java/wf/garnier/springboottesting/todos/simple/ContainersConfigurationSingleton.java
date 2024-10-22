@@ -11,12 +11,13 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 @TestConfiguration
 class ContainersConfigurationSingleton {
 
-    @Container
-    static PostgreSQLContainer<?> postgreSQLContainer = new PostgreSQLContainer<>("postgres:latest");
+	@Container
+	static PostgreSQLContainer<?> postgreSQLContainer = new PostgreSQLContainer<>("postgres:latest");
 
-    @Bean
-    @ServiceConnection
-    public PostgreSQLContainer<?> postgreSQLContainer() {
-        return postgreSQLContainer;
-    }
+	@Bean
+	@ServiceConnection
+	public PostgreSQLContainer<?> postgreSQLContainer() {
+		return postgreSQLContainer;
+	}
+
 }

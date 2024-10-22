@@ -5,7 +5,8 @@ import org.springframework.data.repository.ListCrudRepository;
 
 interface TodoRepository extends ListCrudRepository<TodoItem, Long> {
 
-    List<TodoItem> findAllByUsername(String username);
+	List<TodoItem> findAllByUsername(String username);
 
-    Integer deleteTodoItemByIdAndUsername(Long id, String username);
+	Integer deleteTodoItemByIdAndUsername(Long id, String username);
+
 }

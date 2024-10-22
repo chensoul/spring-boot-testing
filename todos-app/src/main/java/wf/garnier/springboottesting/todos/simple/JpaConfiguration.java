@@ -5,4 +5,6 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 @Configuration
 @EnableJpaRepositories
-class JpaConfiguration {}
+class JpaConfiguration {
+
+}

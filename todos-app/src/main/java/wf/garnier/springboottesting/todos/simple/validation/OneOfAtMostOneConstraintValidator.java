@@ -9,21 +9,21 @@ import org.springframework.util.ReflectionUtils;
 
 public class OneOfAtMostOneConstraintValidator implements ConstraintValidator<OneOf.AtMostOne, Object> {
 
-    private String constraintMessage;
+	private String constraintMessage;
 
-    @Override
-    public void initialize(OneOf.AtMostOne constraintAnnotation) {
-        constraintMessage = constraintAnnotation.message();
-    }
+	@Override
+	public void initialize(OneOf.AtMostOne constraintAnnotation) {
+		constraintMessage = constraintAnnotation.message();
+	}
 
-    @Override
-    public boolean isValid(final Object object, ConstraintValidatorContext context) {
-        if (object == null) {
-            // Unsure whether you can validate a `null` object...
-            return true;
-        }
+	@Override
+	public boolean isValid(final Object object, ConstraintValidatorContext context) {
+		if (object == null) {
+			// Unsure whether you can validate a `null` object...
+			return true;
+		}
 
-        // @formatter:off
+		// @formatter:off
         List<AtMostOneOfField> annotatedFields = Stream.of(object.getClass().getDeclaredFields())
                 .filter(f -> f.isAnnotationPresent(OneOf.class))
                 .peek(f -> f.setAccessible(true))
@@ -67,8 +67,10 @@ public class OneOfAtMostOneConstraintValidator implements ConstraintValidator<On
                 .addPropertyNode(reportedFailingProperty)
                 .addConstraintViolation();
         // @formatter:on
-        return false;
-    }
+		return false;
+	}
 
-    record AtMostOneOfField(String name, boolean hasValue) {}
+	record AtMostOneOfField(String name, boolean hasValue) {
+	}
+
 }
