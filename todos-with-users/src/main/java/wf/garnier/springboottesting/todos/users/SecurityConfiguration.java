@@ -16,34 +16,39 @@ import org.springframework.security.web.SecurityFilterChain;
 @EnableWebSecurity
 class SecurityConfiguration {
 
-	@Bean
-	SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-		return http.authorizeHttpRequests(auth -> auth.anyRequest().authenticated())
-			.formLogin(Customizer.withDefaults())
-			.oauth2Login(Customizer.withDefaults())
-			.build();
-	}
+    @Bean
+    SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        return http.authorizeHttpRequests(auth -> auth.anyRequest().authenticated())
+                .formLogin(Customizer.withDefaults())
+                .oauth2Login(Customizer.withDefaults())
+                .build();
+    }
 
-	@Bean
-	public UserDetailsService userDetailsService() {
-		return new InMemoryUserDetailsManager(
-				User.withUsername("alice").password("{noop}password").roles("user", "admin").build(),
-				User.withUsername("bob").password("{noop}password").roles("user").build());
-	}
+    @Bean
+    public UserDetailsService userDetailsService() {
+        return new InMemoryUserDetailsManager(
+                User.withUsername("alice")
+                        .password("{noop}password")
+                        .roles("user", "admin")
+                        .build(),
+                User.withUsername("bob")
+                        .password("{noop}password")
+                        .roles("user")
+                        .build());
+    }
 
-	@Bean
-	public HttpSessionListener sessionListener() {
-		return new HttpSessionListener() {
-			@Override
-			public void sessionCreated(HttpSessionEvent se) {
-				System.out.println("➡️ SESSION CREATED");
-			}
+    @Bean
+    public HttpSessionListener sessionListener() {
+        return new HttpSessionListener() {
+            @Override
+            public void sessionCreated(HttpSessionEvent se) {
+                System.out.println("➡️ SESSION CREATED");
+            }
 
-			@Override
-			public void sessionDestroyed(HttpSessionEvent se) {
-				System.out.println("➡️ SESSION DESTROYED");
-			}
-		};
-	}
-
+            @Override
+            public void sessionDestroyed(HttpSessionEvent se) {
+                System.out.println("➡️ SESSION DESTROYED");
+            }
+        };
+    }
 }

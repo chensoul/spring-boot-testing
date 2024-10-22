@@ -1,9 +1,8 @@
 package wf.garnier.springboottesting.todos.simple;
 
-import java.io.IOException;
-
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import org.apache.catalina.connector.Request;
 import org.apache.catalina.connector.Response;
 import org.apache.catalina.valves.ValveBase;
@@ -19,14 +18,16 @@ import org.slf4j.LoggerFactory;
  */
 class TomcatLoggingValve extends ValveBase {
 
-	Logger logger = LoggerFactory.getLogger(TomcatLoggingValve.class);
+    Logger logger = LoggerFactory.getLogger(TomcatLoggingValve.class);
 
-	@Override
-	public void invoke(Request request, Response response) throws IOException, ServletException {
-		var status = ((HttpServletResponse) response).getStatus();
-		logger.info("🕵️ user with IP [{}] requested [{}]. We responded with [{}].", request.getRemoteAddr(),
-				request.getRequestURI(), status);
-		getNext().invoke(request, response);
-	}
-
+    @Override
+    public void invoke(Request request, Response response) throws IOException, ServletException {
+        var status = ((HttpServletResponse) response).getStatus();
+        logger.info(
+                "🕵️ user with IP [{}] requested [{}]. We responded with [{}].",
+                request.getRemoteAddr(),
+                request.getRequestURI(),
+                status);
+        getNext().invoke(request, response);
+    }
 }
