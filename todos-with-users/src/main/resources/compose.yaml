@@ -10,7 +10,7 @@ services:
       - '5432'
 
   authserver:
-    image: "bitnami/dex:2.37.0"
+    image: "bitnami/dex:2.41.1"
     deploy:
       replicas: 1
     configs:
